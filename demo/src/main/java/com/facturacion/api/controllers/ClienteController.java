@@ -1,7 +1,12 @@
 package com.facturacion.api.controllers;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.facturacion.api.entities.Cliente;
@@ -55,13 +62,30 @@ public class ClienteController {
     }
 
     @PostMapping("/form")
-    public String guardar(@Valid @ModelAttribute Cliente cliente, BindingResult resultado, RedirectAttributes flash) {
+    public String guardar(@Valid @ModelAttribute Cliente cliente, BindingResult resultado, RedirectAttributes flash,
+                          @RequestParam("file") MultipartFile foto) {
         if (resultado.hasErrors()) {
+            System.out.println(resultado.getErrorCount());
             flash.addFlashAttribute("error", "Revisa los campos del formulario");
             return "form";
         }
+
+        if (!foto.isEmpty()) {
+            try {
+                String uniqueFileName = UUID.randomUUID().toString() + "_" + foto.getOriginalFilename();
+                Path rootPath = Paths.get("uploads").resolve(uniqueFileName);
+                Path rootAbsolutePath = rootPath.toAbsolutePath();
+                Files.copy(foto.getInputStream(), rootAbsolutePath);
+                cliente.setFoto(uniqueFileName);
+                flash.addFlashAttribute("info", "Foto subida con éxito.");
+            } catch (IOException e) {
+                flash.addFlashAttribute("error", "No se pudo subir la foto. Intentá de nuevo.");
+            }
+        }
+
         clienteService.save(cliente);
         flash.addFlashAttribute("success", "Cliente guardado con exito");
+
         return "redirect:/listar";
     }
 
@@ -77,4 +101,3 @@ public class ClienteController {
         return "form";
     }
 }
-
