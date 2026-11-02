@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+<body>
+
+    <header th:replace="~{layout/layout :: header}"></header>
+
+    <div class="container py-4">
+        <div class="card shadow-sm border-0 col-lg-9 mx-auto">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0" th:text="${titulo}">Detalle de Factura</h4>
+                <a th:href="@{'/ver/' + ${factura.cliente.id}}" class="btn btn-light btn-sm">
+                    <i class="bi bi-arrow-left"></i> Volver al Cliente
+                </a>
+            </div>
+            <div class="card-body">
+
+                <ul class="list-group mb-4">
+                    <li class="list-group-item list-group-item-primary fw-bold">
+                        <i class="bi bi-person-badge"></i> Datos del Cliente
+                    </li>
+                    <li class="list-group-item" th:text="'Nombre: ' + ${factura.cliente.nombre} + ' ' + ${factura.cliente.apellido}"></li>
+                    <li class="list-group-item" th:text="'Email: ' + ${factura.cliente.email}"></li>
+                </ul>
+
+                <ul class="list-group mb-4">
+                    <li class="list-group-item list-group-item-success fw-bold">
+                        <i class="bi bi-receipt"></i> Datos de la Factura
+                    </li>
+                    <li class="list-group-item" th:text="'Folio / ID: #' + ${factura.id}"></li>
+                    <li class="list-group-item" th:text="'Descripción: ' + ${factura.descripcion}"></li>
+                    <li class="list-group-item" th:text="'Fecha de emisión: ' + ${#dates.format(factura.createAt, 'dd/MM/yyyy')}"></li>
+                    <li class="list-group-item" th:if="${not #strings.isEmpty(factura.observacion)}"
+                        th:text="'Observación: ' + ${factura.observacion}"></li>
+                </ul>
+
+                <h5 class="mb-3 text-secondary">
+                    <i class="bi bi-list-check"></i> Detalle de Ítems
+                </h5>
+
+                <div class="alert alert-info" th:if="${#lists.isEmpty(factura.items)}">
+                    No hay líneas de ítems asignadas para esta factura.
+                </div>
+
+                <div class="table-responsive mb-4" th:if="${not #lists.isEmpty(factura.items)}">
+                    <table class="table table-bordered table-striped table-hover align-middle">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th>Producto</th>
+                                <th class="text-end" style="width: 150px;">Precio Unit.</th>
+                                <th class="text-center" style="width: 120px;">Cantidad</th>
+                                <th class="text-end" style="width: 150px;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="linea : ${factura.items}">
+                                <td th:text="${linea.producto.nombre}">Producto</td>
+                                <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(linea.producto.precio, 1, 'POINT', 2, 'COMMA')}">$0.00</td>
+                                <td class="text-center" th:text="${linea.cantidad}">1</td>
+                                <td class="text-end fw-semibold" th:text="'$' + ${#numbers.formatDecimal(linea.calcularImporte(), 1, 'POINT', 2, 'COMMA')}">$0.00</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-light">
+                                <td colspan="3" class="text-end fw-bold fs-5">Gran Total:</td>
+                                <td class="text-end fw-bold fs-5 text-success"
+                                    th:text="'$' + ${#numbers.formatDecimal(factura.granTotal, 1, 'POINT', 2, 'COMMA')}">$0.00</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-secondary" onclick="window.print();">
+                        <i class="bi bi-printer"></i> Imprimir Factura
+                    </button>
+                    <a th:href="@{'/ver/' + ${factura.cliente.id}}" class="btn btn-primary">
+                        <i class="bi bi-arrow-left"></i> Volver al Cliente
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout/layout :: footer}"></footer>
+
+</body>
+</html>
+

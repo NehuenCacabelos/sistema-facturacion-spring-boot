@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:text="'Spring Boot: MVC + Data JPA - ' + ${titulo}">Spring Boot</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
+</head>
+<body>
+
+    <header th:fragment="header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+            <div class="container-fluid">
+                <a class="navbar-brand" th:href="@{/listar}">
+                    <i class="bi bi-box-seam"></i> Facturación App
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" th:href="@{/listar}">
+                                <i class="bi bi-people"></i> Clientes
+                            </a>
+                        </li>
+                    </ul>
+                    <a th:href="@{/form}" class="btn btn-outline-success">
+                        <i class="bi bi-person-plus"></i> Nuevo Cliente
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="alert alert-success alert-dismissible fade show" th:if="${success != null}">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div class="alert alert-danger alert-dismissible fade show" th:if="${error != null}">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div class="alert alert-warning alert-dismissible fade show" th:if="${warning != null}">
+                <i class="bi bi-exclamation-circle-fill me-2"></i>
+                <span th:text="${warning}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div class="alert alert-info alert-dismissible fade show" th:if="${info != null}">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <span th:text="${info}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Main content placeholder -->
+    </div>
+
+    <!-- Paginator Nav Fragment -->
+    <nav th:fragment="paginator">
+        <ul class="pagination justify-content-center" th:if="${page.totalPaginas > 1}">
+            <li class="page-item" th:classappend="${page.first ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${page.url}(page=0)}">&laquo; Primera</a>
+            </li>
+            <li class="page-item" th:classappend="${!page.hasPrevious ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${page.url}(page=${page.paginaActual - 2})}">&lsaquo; Anterior</a>
+            </li>
+
+            <li class="page-item" th:each="item : ${page.paginas}" th:classappend="${item.actual ? 'active' : ''}">
+                <span class="page-link" th:if="${item.actual}" th:text="${item.numero}"></span>
+                <a class="page-link" th:if="${!item.actual}" th:href="@{${page.url}(page=${item.numero - 1})}" th:text="${item.numero}"></a>
+            </li>
+
+            <li class="page-item" th:classappend="${!page.hasNext ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${page.url}(page=${page.paginaActual})}">Siguiente &rsaquo;</a>
+            </li>
+            <li class="page-item" th:classappend="${page.last ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${page.url}(page=${page.totalPaginas - 1})}">Última &raquo;</a>
+            </li>
+        </ul>
+    </nav>
+
+    <footer th:fragment="footer" class="container mt-5 py-3 border-top text-center text-muted">
+        <p>&copy; 2026 Gestión Integral de Clientes y Facturación - Spring Boot 3.4 &amp; Thymeleaf</p>
+        <!-- jQuery and jQuery UI (with autocomplete) -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+        <!-- Bootstrap 5 JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </footer>
+
+</body>
+</html>
+

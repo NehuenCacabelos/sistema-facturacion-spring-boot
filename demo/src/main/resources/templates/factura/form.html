@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+<body>
+
+    <header th:replace="~{layout/layout :: header}"></header>
+
+    <div class="container py-4">
+        <div class="card shadow-sm border-0 col-lg-10 mx-auto">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0" th:text="${titulo}">Crear Factura</h4>
+                <a th:href="@{'/ver/' + ${factura.cliente.id}}" class="btn btn-light btn-sm">
+                    <i class="bi bi-arrow-left"></i> Volver al Cliente
+                </a>
+            </div>
+            <div class="card-body">
+
+                <form th:action="@{/factura/form}" th:object="${factura}" method="post">
+
+                    <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label fw-bold">Cliente</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control-plaintext"
+                                   th:value="${factura.cliente.nombre} + ' ' + ${factura.cliente.apellido} + ' (' + ${factura.cliente.email} + ')'"
+                                   readonly />
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="descripcion" class="col-sm-2 col-form-label">Descripción</label>
+                        <div class="col-sm-10">
+                            <input type="text" th:field="*{descripcion}" class="form-control"
+                                   th:errorclass="'form-control is-invalid'" placeholder="Ej: Factura de venta o servicios" />
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="observacion" class="col-sm-2 col-form-label">Observación</label>
+                        <div class="col-sm-10">
+                            <textarea th:field="*{observacion}" class="form-control" rows="2"
+                                      placeholder="Observaciones adicionales opcionales"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 row">
+                        <label for="buscar_producto" class="col-sm-2 col-form-label">Buscar producto</label>
+                        <div class="col-sm-10">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" name="buscar_producto" id="buscar_producto" class="form-control"
+                                       placeholder="Escriba al menos 2 letras para buscar un producto..." />
+                            </div>
+                            <div class="form-text">Seleccione un producto sugerido para agregarlo a la factura.</div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden Template -->
+                    <table th:replace="~{factura/plantilla-items :: itemsFactura}"></table>
+
+                    <!-- Table of Items -->
+                    <div class="table-responsive mb-3">
+                        <table id="cargarItemProductos" class="table table-bordered table-striped table-hover align-middle">
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th>Nombre del Producto</th>
+                                    <th class="text-end" style="width: 140px;">Precio Unit.</th>
+                                    <th class="text-center" style="width: 130px;">Cantidad</th>
+                                    <th class="text-end" style="width: 150px;">Total</th>
+                                    <th class="text-center" style="width: 80px;">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dinamically populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Total Banner -->
+                    <div class="d-flex justify-content-end align-items-center gap-3 mb-4 p-3 bg-light rounded border">
+                        <h4 class="mb-0 text-muted">Gran Total:</h4>
+                        <h3 class="mb-0 text-success fw-bold" id="gran_total">$0.00</h3>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a th:href="@{'/ver/' + ${factura.cliente.id}}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check2-square"></i> Guardar Factura
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout/layout :: footer}"></footer>
+    <script th:replace="~{factura/js/autocomplete-productos :: javascript}"></script>
+
+</body>
+</html>
+

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo}">Aplicación en Spring</title>
+</head>
+<body>
+    <div th:if="${usuario != null}">
+        <h1 th:text="${usuario.nombre}"></h1>
+        <h1 th:text="${usuario.apellido}"></h1>
+    </div>
+
+    <table border="1" style="margin-top: 15px;">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>eMail</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="u : ${lista}">
+                <td th:text="${u.nombre}"></td>
+                <td th:text="${u.apellido}"></td>
+                <td th:text="${u.email != null ? u.email : 'No hay email'}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul style="margin-top: 15px;">
+        <li th:if="${clave != null}" th:text="'La clave ingresada es ' + ${clave}"></li>
+        <li th:if="${login != null}" th:text="'El usuario es ' + ${login}"></li>
+    </ul>
+</body>
+</html>
+
