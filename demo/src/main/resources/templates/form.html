@@ -7,59 +7,76 @@
 
     <div class="container py-4">
         <div class="card shadow-sm border-0 col-lg-8 mx-auto">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h4 class="mb-0" th:text="${titulo != null ? titulo : 'Cargar cliente'}">Cargar cliente</h4>
             </div>
             <div class="card-body">
 
-                <div class="alert alert-danger" th:if="${error != null}" th:text="${error}"></div>
+                <!-- Bloque global de captura de errores del binding (como indica el PDF) -->
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+                    <strong>Revisá los campos marcados:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Mensaje de error</li>
+                    </ul>
+                </div>
 
-                <form th:action="@{/form}" th:object="${cliente}" method="post">
+                <div class="alert alert-danger" th:if="${error != null and !#fields.hasErrors('*')}" th:text="${error}"></div>
 
+                <form th:action="@{/form}" th:object="${cliente}" method="post" enctype="multipart/form-data" novalidate>
+
+                    <!-- Input id oculto para no modificar clientes existentes -->
                     <input type="hidden" th:field="*{id}" />
 
                     <div class="mb-3 row">
                         <label for="nombre" class="col-sm-3 col-form-label">Nombre</label>
                         <div class="col-sm-9">
-                            <input type="text" th:field="*{nombre}" class="form-control"
-                                   th:errorclass="'form-control is-invalid'" placeholder="Nombre del cliente" />
-                            <small class="form-text text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+                            <input type="text" th:field="*{nombre}" id="nombre" class="form-control"
+                                   th:errorclass="'form-control is-invalid'" placeholder="Nombre" />
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Errores</div>
                         </div>
                     </div>
 
                     <div class="mb-3 row">
                         <label for="apellido" class="col-sm-3 col-form-label">Apellido</label>
                         <div class="col-sm-9">
-                            <input type="text" th:field="*{apellido}" class="form-control"
-                                   th:errorclass="'form-control is-invalid'" placeholder="Apellido del cliente" />
-                            <small class="form-text text-danger" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></small>
+                            <input type="text" th:field="*{apellido}" id="apellido" class="form-control"
+                                   th:errorclass="'form-control is-invalid'" placeholder="Apellido" />
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}">Errores</div>
                         </div>
                     </div>
 
                     <div class="mb-3 row">
                         <label for="email" class="col-sm-3 col-form-label">Email</label>
                         <div class="col-sm-9">
-                            <input type="email" th:field="*{email}" class="form-control"
-                                   th:errorclass="'form-control is-invalid'" placeholder="ejemplo@correo.com" />
-                            <small class="form-text text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                            <input type="email" th:field="*{email}" id="email" class="form-control"
+                                   th:errorclass="'form-control is-invalid'" placeholder="email@ejemplo.com" />
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Errores</div>
                         </div>
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="createAt" class="col-sm-3 col-form-label">Fecha de Alta</label>
+                        <label for="createAt" class="col-sm-3 col-form-label">Fecha</label>
                         <div class="col-sm-9">
-                            <input type="date" th:field="*{createAt}" class="form-control"
+                            <input type="date" th:field="*{createAt}" id="createAt" class="form-control"
                                    th:errorclass="'form-control is-invalid'" />
-                            <small class="form-text text-danger" th:if="${#fields.hasErrors('createAt')}" th:errors="*{createAt}"></small>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('createAt')}" th:errors="*{createAt}">Errores</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="foto" class="col-sm-3 col-form-label">Foto</label>
+                        <div class="col-sm-9">
+                            <input type="file" name="file" id="foto" class="form-control" accept="image/*" />
                         </div>
                     </div>
 
                     <div class="d-flex justify-content-end gap-2 mt-4">
                         <a th:href="@{/listar}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Cancelar
+                            <i class="bi bi-x-circle"></i> Cancelar
                         </a>
-                        <button type="submit" class="btn btn-success">
-                            <i class="bi bi-check2-circle"></i> Guardar Cliente
+                        <button type="submit" class="btn btn-success"
+                                th:text="${cliente.id != null ? 'Actualizar' : 'Agregar'}">
+                            Agregar
                         </button>
                     </div>
 
