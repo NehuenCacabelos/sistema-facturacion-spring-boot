@@ -28,7 +28,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="cliente : ${clientes}">
+                            <tr th:each="cliente : ${lista}">
                                 <td th:text="${cliente.id}">1</td>
                                 <td>
                                     <a th:href="@{'/ver/' + ${cliente.id}}" class="fw-semibold text-decoration-none" th:text="${cliente.nombre}"></a>
@@ -61,7 +61,7 @@
                 </div>
 
                 <!-- Paginator -->
-                <div class="mt-3" th:replace="~{layout/layout :: paginator}"></div>
+                <div class="mt-3" th:if="${page != null}" th:replace="~{layout/layout :: paginator}"></div>
 
             </div>
         </div>
@@ -71,4 +71,3 @@
 
 </body>
 </html>
-

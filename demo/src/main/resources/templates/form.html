@@ -8,11 +8,13 @@
     <div class="container py-4">
         <div class="card shadow-sm border-0 col-lg-8 mx-auto">
             <div class="card-header bg-primary text-white">
-                <h4 class="mb-0" th:text="${titulo}">Formulario de Cliente</h4>
+                <h4 class="mb-0" th:text="${titulo != null ? titulo : 'Cargar cliente'}">Cargar cliente</h4>
             </div>
             <div class="card-body">
 
-                <form th:action="@{/form}" th:object="${cliente}" method="post" enctype="multipart/form-data">
+                <div class="alert alert-danger" th:if="${error != null}" th:text="${error}"></div>
+
+                <form th:action="@{/form}" th:object="${cliente}" method="post">
 
                     <input type="hidden" th:field="*{id}" />
 
@@ -21,7 +23,7 @@
                         <div class="col-sm-9">
                             <input type="text" th:field="*{nombre}" class="form-control"
                                    th:errorclass="'form-control is-invalid'" placeholder="Nombre del cliente" />
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
                         </div>
                     </div>
 
@@ -30,7 +32,7 @@
                         <div class="col-sm-9">
                             <input type="text" th:field="*{apellido}" class="form-control"
                                    th:errorclass="'form-control is-invalid'" placeholder="Apellido del cliente" />
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></div>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></small>
                         </div>
                     </div>
 
@@ -39,7 +41,7 @@
                         <div class="col-sm-9">
                             <input type="email" th:field="*{email}" class="form-control"
                                    th:errorclass="'form-control is-invalid'" placeholder="ejemplo@correo.com" />
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
                         </div>
                     </div>
 
@@ -48,15 +50,7 @@
                         <div class="col-sm-9">
                             <input type="date" th:field="*{createAt}" class="form-control"
                                    th:errorclass="'form-control is-invalid'" />
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('createAt')}" th:errors="*{createAt}"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <label for="file" class="col-sm-3 col-form-label">Foto de Perfil</label>
-                        <div class="col-sm-9">
-                            <input type="file" name="file" class="form-control" accept="image/*" />
-                            <div class="form-text">Formatos sugeridos: JPG, PNG, WebP (máx. 10MB).</div>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('createAt')}" th:errors="*{createAt}"></small>
                         </div>
                     </div>
 
@@ -79,4 +73,3 @@
 
 </body>
 </html>
-
