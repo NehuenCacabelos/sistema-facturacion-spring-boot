@@ -16,3 +16,4 @@ public class LocaleController {
         return "redirect:".concat(ultimoUrl);
     }
 }
+

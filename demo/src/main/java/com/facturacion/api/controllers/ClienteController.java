@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.facturacion.api.entities.Cliente;
@@ -64,6 +65,14 @@ public class ClienteController {
         model.addAttribute("sort", sort);
         model.addAttribute("dir", dir);
         return "listar";
+    }
+
+    @GetMapping(value = "/listar", params = "format=xlsx")
+    public ModelAndView listarExcel() {
+        List<Cliente> lista = clienteService.findAll();
+        ModelAndView mav = new ModelAndView("listar.xlsx");
+        mav.addObject("clientes", lista);
+        return mav;
     }
 
     @GetMapping("/form")
