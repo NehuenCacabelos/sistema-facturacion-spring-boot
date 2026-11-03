@@ -85,3 +85,4 @@ public class ClienteXlsxView extends AbstractXlsxView {
         sheet.createFreezePane(0, 2);
     }
 }
+
