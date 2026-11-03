@@ -12,17 +12,17 @@
             </div>
             <div class="card-body">
 
-                <!-- Bloque global de captura de errores del binding (como indica el PDF) -->
-                <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
-                    <strong>Revisá los campos marcados:</strong>
-                    <ul class="mb-0 mt-2">
-                        <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Mensaje de error</li>
-                    </ul>
-                </div>
-
-                <div class="alert alert-danger" th:if="${error != null and !#fields.hasErrors('*')}" th:text="${error}"></div>
-
                 <form th:action="@{/form}" th:object="${cliente}" method="post" enctype="multipart/form-data" novalidate>
+
+                    <!-- Bloque global de captura de errores del binding dentro del form th:object -->
+                    <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+                        <strong>Revisá los campos marcados:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Mensaje de error</li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-danger" th:if="${error != null and !#fields.hasErrors('*')}" th:text="${error}"></div>
 
                     <!-- Input id oculto para no modificar clientes existentes -->
                     <input type="hidden" th:field="*{id}" />
