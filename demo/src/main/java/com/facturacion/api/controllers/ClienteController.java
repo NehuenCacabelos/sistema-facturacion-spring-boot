@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,9 +42,21 @@ public class ClienteController {
     }
 
     @GetMapping({"", "/", "/listar"})
-    public String listar(Model model) {
-        model.addAttribute("titulo", "Clientes");
-        model.addAttribute("lista", clienteService.findAll());
+    public String listar(Model model,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "5") int size,
+            @RequestParam(name = "sort", defaultValue = "id") String sort,
+            @RequestParam(name = "dir", defaultValue = "asc") String dir) {
+
+        model.addAttribute("titulo", "Listado de clientes");
+        Sort orden = dir.equalsIgnoreCase("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending();
+        Pageable pageable = PageRequest.of(page, size, orden);
+        Page<Cliente> pagina = clienteService.findAll(pageable);
+
+        model.addAttribute("pagina", pagina);
+        model.addAttribute("lista", pagina.getContent());
+        model.addAttribute("sort", sort);
+        model.addAttribute("dir", dir);
         return "listar";
     }
 

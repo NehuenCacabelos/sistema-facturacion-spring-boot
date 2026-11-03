@@ -56,6 +56,36 @@
                     </table>
                 </div>
 
+                <!-- Bloque de Paginación (según apunte de cátedra) -->
+                <nav aria-label="Paginación" class="mt-3" th:if="${pagina != null and pagina.totalPages > 0}">
+                    <ul class="pagination justify-content-center mb-0">
+                        <!-- Anterior -->
+                        <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/listar(page=${pagina.number - 1}, size=${pagina.size}, sort=${sort}, dir=${dir})}"
+                               aria-label="Anterior">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <!-- Números -->
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}"
+                            th:classappend="${i} == ${pagina.number} ? 'active'">
+                            <a class="page-link"
+                               th:text="${i + 1}"
+                               th:href="@{/listar(page=${i}, size=${pagina.size}, sort=${sort}, dir=${dir})}">
+                            </a>
+                        </li>
+                        <!-- Siguiente -->
+                        <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/listar(page=${pagina.number + 1}, size=${pagina.size}, sort=${sort}, dir=${dir})}"
+                               aria-label="Siguiente">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
 
             </div>
         </div>
