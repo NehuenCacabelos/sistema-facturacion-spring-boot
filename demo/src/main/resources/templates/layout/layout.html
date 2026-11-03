@@ -66,7 +66,7 @@
     </div>
 
     <!-- Paginator Nav Fragment -->
-    <nav th:fragment="paginator">
+    <nav th:fragment="paginator" th:if="${page != null}">
         <ul class="pagination justify-content-center" th:if="${page.totalPaginas > 1}">
             <li class="page-item" th:classappend="${page.first ? 'disabled' : ''}">
                 <a class="page-link" th:href="@{${page.url}(page=0)}">&laquo; Primera</a>
