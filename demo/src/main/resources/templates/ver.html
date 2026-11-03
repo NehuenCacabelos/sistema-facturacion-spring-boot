@@ -9,14 +9,14 @@
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h4 class="mb-0" th:text="${titulo != null ? titulo : 'Vista de cliente'}">Vista de cliente</h4>
-                <a th:href="@{/listar}" class="btn btn-light btn-sm">
-                    <i class="bi bi-arrow-left"></i> Volver al listado
+                <a th:href="@{/listar}" class="btn btn-light btn-sm" th:text="${volver != null ? volver : 'Volver al listado'}">
+                    Volver al listado
                 </a>
             </div>
             <div class="card-body">
 
                 <div class="row align-items-center mb-4">
-                    <!-- Foto según especificación de cátedra (pág. 5) -->
+                    <!-- Foto según especificación de cátedra -->
                     <div class="col-md-3 text-center mb-3 mb-md-0">
                         <img th:if="${cliente.foto != null and #strings.length(cliente.foto) > 0}"
                              th:src="@{'/uploads/' + ${cliente.foto}}"
@@ -32,20 +32,20 @@
                     <div class="col-md-9">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item"><strong>ID:</strong> <span th:text="${cliente.id}"></span></li>
-                            <li class="list-group-item"><strong>Nombre:</strong> <span th:text="${cliente.nombre}"></span></li>
-                            <li class="list-group-item"><strong>Apellido:</strong> <span th:text="${cliente.apellido}"></span></li>
-                            <li class="list-group-item"><strong>Email:</strong> <span th:text="${cliente.email}"></span></li>
-                            <li class="list-group-item"><strong>Fecha:</strong> <span th:text="${cliente.createAt}"></span></li>
+                            <li class="list-group-item"><strong th:text="#{controller.clientes.nombre}">Nombre</strong>: <span th:text="${cliente.nombre}"></span></li>
+                            <li class="list-group-item"><strong th:text="#{controller.clientes.apellido}">Apellido</strong>: <span th:text="${cliente.apellido}"></span></li>
+                            <li class="list-group-item"><strong th:text="#{controller.clientes.correo}">Email</strong>: <span th:text="${cliente.email}"></span></li>
+                            <li class="list-group-item"><strong th:text="#{controller.clientes.fecha}">Fecha</strong>: <span th:text="${cliente.createAt}"></span></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center mt-4 mb-3 border-bottom pb-2">
                     <h5 class="mb-0 text-secondary">
-                        <i class="bi bi-receipt"></i> Facturas
+                        <i class="bi bi-receipt"></i> <span th:text="${facturastexto != null ? facturastexto : 'Facturas'}">Facturas</span>
                     </h5>
                     <a th:href="@{'/nuevafactura/' + ${cliente.id}}" class="btn btn-success btn-sm">
-                        <i class="bi bi-plus-circle"></i> Nueva factura
+                        <i class="bi bi-plus-circle"></i> <span th:text="#{controller.clientes.factura}">Nueva factura</span>
                     </a>
                 </div>
 
@@ -57,11 +57,11 @@
                     <table class="table table-bordered table-striped table-hover align-middle">
                         <thead class="table-secondary">
                             <tr>
-                                <th># Factura</th>
+                                <th th:text="${numero != null ? numero : '# Factura'}"># Factura</th>
                                 <th>Descripción</th>
-                                <th>Fecha</th>
-                                <th class="text-end">Importe</th>
-                                <th class="text-center">Ver</th>
+                                <th th:text="${fecha != null ? fecha : 'Fecha'}">Fecha</th>
+                                <th class="text-end" th:text="${importe != null ? importe : 'Importe'}">Importe</th>
+                                <th class="text-center" th:text="${detalles != null ? detalles : 'Ver'}">Ver</th>
                                 <th class="text-center">Eliminar</th>
                             </tr>
                         </thead>
@@ -75,14 +75,15 @@
                                     $0.00
                                 </td>
                                 <td class="text-center">
-                                    <a th:href="@{'/facturas/' + ${factura.id}}" class="btn btn-primary btn-sm" title="Ver detalle">
-                                        <i class="bi bi-eye"></i> Ver
+                                    <a th:href="@{'/facturas/' + ${factura.id}}" class="btn btn-primary btn-sm" title="Ver detalle"
+                                       th:text="${detalles != null ? detalles : 'Ver'}">
+                                        Ver
                                     </a>
                                 </td>
                                 <td class="text-center">
                                     <a th:href="@{'/factura/eliminar/' + ${factura.id}}" class="btn btn-danger btn-sm"
                                        onclick="return confirm('¿Está seguro de eliminar esta factura?');" title="Eliminar">
-                                        <i class="bi bi-trash"></i> Eliminar
+                                        <i class="bi bi-trash"></i>
                                     </a>
                                 </td>
                             </tr>

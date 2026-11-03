@@ -30,9 +30,15 @@
                             </a>
                         </li>
                     </ul>
-                    <a th:href="@{/form}" class="btn btn-outline-success">
-                        <i class="bi bi-person-plus"></i> Nuevo Cliente
-                    </a>
+                    <div class="d-flex align-items-center gap-2">
+                        <a th:href="@{/form}" class="btn btn-outline-success btn-sm">
+                            <i class="bi bi-person-plus"></i> Nuevo Cliente
+                        </a>
+                        <div class="vr mx-2 d-none d-lg-block text-white"></div>
+                        <!-- Idiomas (según apunte de cátedra) -->
+                        <a class="btn btn-outline-info btn-sm" th:href="@{/locale(lang='es_ES')}">ES</a>
+                        <a class="btn btn-outline-info btn-sm" th:href="@{/locale(lang='en_EN')}">EN</a>
+                    </div>
                 </div>
             </div>
         </nav>

@@ -5,9 +5,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +38,9 @@ public class ClienteController {
 
     private final IClienteService clienteService;
     private final IFacturaService facturaService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     public ClienteController(IClienteService clienteService, IFacturaService facturaService) {
         this.clienteService = clienteService;
@@ -68,12 +74,21 @@ public class ClienteController {
     }
 
     @GetMapping("/ver/{id}")
-    public String ver(@PathVariable(value = "id") long id, Map<String, Object> model) {
+    public String ver(@PathVariable(value = "id") long id, Map<String, Object> model, Locale locale) {
         Cliente cliente = clienteService.findById(id);
         List<Factura> facturas = facturaService.findAllByCliente(id);
-        model.put("cliente", cliente);
         model.put("facturas", facturas);
-        model.put("titulo", "Vista de cliente");
+        model.put("cliente", cliente);
+
+        // Textos multiidioma desde MessageSource (según apunte de cátedra pág. 7)
+        model.put("titulo", messageSource.getMessage("controller.clientes.ver.titulo", null, locale));
+        model.put("volver", messageSource.getMessage("controller.clientes.ver.volver", null, locale));
+        model.put("facturastexto", messageSource.getMessage("controller.clientes.ver.facturas", null, locale));
+        model.put("numero", messageSource.getMessage("controller.clientes.ver.numero", null, locale));
+        model.put("fecha", messageSource.getMessage("controller.clientes.ver.fecha", null, locale));
+        model.put("importe", messageSource.getMessage("controller.clientes.ver.importe", null, locale));
+        model.put("detalles", messageSource.getMessage("controller.clientes.ver.detalles", null, locale));
+
         return "ver";
     }
 

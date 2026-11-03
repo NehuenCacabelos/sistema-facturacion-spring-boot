@@ -8,9 +8,9 @@
     <div class="container py-4">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h4 class="mb-0" th:text="${titulo}">Clientes</h4>
+                <h4 class="mb-0" th:text="#{controller.clientes.titulo}">Listado de clientes</h4>
                 <a th:href="@{/form}" class="btn btn-success btn-sm">
-                    <i class="bi bi-person-plus-fill"></i> Crear cliente
+                    <i class="bi bi-person-plus-fill"></i> <span th:text="#{controller.clientes.crear}">Crear cliente</span>
                 </a>
             </div>
             <div class="card-body">
@@ -19,13 +19,13 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>Id</th>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Email</th>
-                                <th>Fecha</th>
-                                <th class="text-center">Crear factura</th>
-                                <th class="text-center">Ver</th>
-                                <th class="text-center">Eliminar</th>
+                                <th th:text="#{controller.clientes.nombre}">Nombre</th>
+                                <th th:text="#{controller.clientes.apellido}">Apellido</th>
+                                <th th:text="#{controller.clientes.correo}">Email</th>
+                                <th th:text="#{controller.clientes.fecha}">Fecha</th>
+                                <th class="text-center" th:text="#{controller.clientes.factura}">Crear factura</th>
+                                <th class="text-center" th:text="#{controller.clientes.ver.detalles}">Ver</th>
+                                <th class="text-center" th:text="#{controller.clientes.borrar}">Eliminar</th>
                             </tr>
                         </thead>
                         <tbody>
