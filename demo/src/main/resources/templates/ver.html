@@ -44,7 +44,7 @@
                     <h5 class="mb-0 text-secondary">
                         <i class="bi bi-receipt"></i> Facturas
                     </h5>
-                    <a th:href="@{'/factura/form/' + ${cliente.id}}" class="btn btn-success btn-sm">
+                    <a th:href="@{'/nuevafactura/' + ${cliente.id}}" class="btn btn-success btn-sm">
                         <i class="bi bi-plus-circle"></i> Nueva factura
                     </a>
                 </div>
@@ -75,7 +75,7 @@
                                     $0.00
                                 </td>
                                 <td class="text-center">
-                                    <a th:href="@{'/factura/ver/' + ${factura.id}}" class="btn btn-primary btn-sm" title="Ver detalle">
+                                    <a th:href="@{'/facturas/' + ${factura.id}}" class="btn btn-primary btn-sm" title="Ver detalle">
                                         <i class="bi bi-eye"></i> Ver
                                     </a>
                                 </td>

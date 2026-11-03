@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+<body>
+
+    <header th:replace="~{layout/layout :: header}"></header>
+
+    <div class="container py-4">
+        <div class="card shadow-sm border-0 col-lg-10 mx-auto">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <span class="badge bg-light text-primary me-2">Factura</span>
+                    <span th:text="'#' + ${factura.id}">#1</span>
+                </h5>
+                <div class="d-flex gap-2">
+                    <a th:href="@{'/ver/' + ${factura.cliente.id}}" class="btn btn-light btn-sm">
+                        <i class="bi bi-arrow-left"></i> Volver al cliente
+                    </a>
+                    <button type="button" class="btn btn-warning btn-sm" onclick="window.print();">
+                        <i class="bi bi-printer"></i> Imprimir
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <div class="row g-4 mb-4">
+                    <!-- Datos de la Factura (Izquierda) -->
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100 bg-light">
+                            <h6 class="text-secondary border-bottom pb-2 mb-3">
+                                <i class="bi bi-file-earmark-text"></i> Datos de la Factura
+                            </h6>
+                            <p class="mb-2"><strong>Descripción:</strong> <span th:text="${factura.descripcion}"></span></p>
+                            <p class="mb-2"><strong>Observación:</strong> <span th:text="${factura.observacion != null ? factura.observacion : 'Sin observación'}"></span></p>
+                            <p class="mb-0"><strong>Fecha de factura:</strong> <span th:text="${factura.createAt}"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- Datos del Cliente (Derecha) -->
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100 bg-light">
+                            <h6 class="text-secondary border-bottom pb-2 mb-3">
+                                <i class="bi bi-person-circle"></i> Cliente
+                            </h6>
+                            <p class="mb-2"><strong>Nombre y apellido:</strong> <span th:text="${factura.cliente.nombre + ' ' + factura.cliente.apellido}"></span></p>
+                            <p class="mb-0"><strong>E-mail:</strong> <span th:text="${factura.cliente.email}"></span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalle de productos -->
+                <h6 class="text-secondary mb-3">
+                    <i class="bi bi-cart-check"></i> Detalle
+                </h6>
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered table-striped align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Descripcion</th>
+                                <th class="text-center" style="width: 120px;">Cantidad</th>
+                                <th class="text-end" style="width: 160px;">Precio unitario</th>
+                                <th class="text-end" style="width: 160px;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${factura.lista}">
+                                <td th:text="${item.producto.nombre}">Producto</td>
+                                <td class="text-center" th:text="${item.cantidad}">1</td>
+                                <td class="text-end" th:text="'$ ' + ${#numbers.formatDecimal(item.producto.precio, 1, 'POINT', 2, 'COMMA')}">$ 0,00</td>
+                                <td class="text-end fw-semibold" th:text="'$ ' + ${#numbers.formatDecimal(item.monto, 1, 'POINT', 2, 'COMMA')}">$ 0,00</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-light fw-bold fs-5">
+                                <td colspan="3" class="text-end">TOTAL</td>
+                                <td class="text-end text-success" th:text="'$ ' + ${#numbers.formatDecimal(factura.total, 1, 'POINT', 2, 'COMMA')}">$ 0,00</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Pie de factura -->
+                <div class="d-flex justify-content-between text-muted border-top pt-3 small">
+                    <span>Factura</span>
+                    <span>Emitida: <span th:text="${factura.createAt}"></span></span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout/layout :: footer}"></footer>
+
+</body>
+</html>

@@ -36,7 +36,7 @@
                                 <td th:text="${cliente.email}">correo@dominio.com</td>
                                 <td th:text="${cliente.createAt}">2023-01-01</td>
                                 <td class="text-center">
-                                    <a class="btn btn-success btn-sm" th:href="@{'/factura/form/' + ${cliente.id}}">
+                                    <a class="btn btn-success btn-sm" th:href="@{'/nuevafactura/' + ${cliente.id}}">
                                         Crear factura
                                     </a>
                                 </td>

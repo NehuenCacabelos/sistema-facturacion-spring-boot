@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+<body>
+
+    <header th:replace="~{layout/layout :: header}"></header>
+
+    <div class="container py-4">
+        <div class="card shadow-sm border-0 col-lg-10 mx-auto">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <span class="badge bg-light text-primary me-2">Factura</span>
+                    <span th:text="${titulo}">Nueva Factura</span>
+                </h5>
+                <a th:href="@{'/ver/' + ${cliente.id}}" class="btn btn-light btn-sm">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+            </div>
+            <div class="card-body">
+
+                <!-- Datos del cliente -->
+                <div class="alert alert-secondary d-flex align-items-center mb-4">
+                    <i class="bi bi-person-fill fs-4 me-2"></i>
+                    <strong class="fs-5" th:text="${cliente.nombre + ' ' + cliente.apellido}">Nombre Cliente</strong>
+                </div>
+
+                <form th:action="@{/nuevafactura}" th:object="${factura}" method="post">
+
+                    <input type="hidden" name="cliente.id" th:value="${cliente.id}" />
+
+                    <!-- Bloque de errores -->
+                    <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+                        <strong>Revisa los campos marcados:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Mensaje de error</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripcion (titulo de factura)</label>
+                        <input type="text" th:field="*{descripcion}" id="descripcion" class="form-control"
+                               th:errorclass="'form-control is-invalid'" placeholder="Ej: Servicios del mes" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}">
+                            no debe estar vacio
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="observacion" class="form-label">Observacion</label>
+                        <textarea th:field="*{observacion}" id="observacion" class="form-control" rows="3"
+                                  placeholder="Notas adicionales..."></textarea>
+                    </div>
+
+                    <!-- Selector de productos -->
+                    <div class="card bg-light border-0 p-3 mb-4">
+                        <label for="productoSelect" class="form-label fw-bold">Producto</label>
+                        <div class="row g-2">
+                            <div class="col-md-9">
+                                <select id="productoSelect" class="form-select">
+                                    <option value="">-- Seleccionar --</option>
+                                    <option th:each="prod : ${productos}"
+                                            th:value="${prod.id}"
+                                            th:data-nombre="${prod.nombre}"
+                                            th:data-precio="${prod.precio}"
+                                            th:text="${prod.nombre + ' - $' + #numbers.formatDecimal(prod.precio, 1, 'POINT', 2, 'COMMA')}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-outline-success w-100" onclick="agregarItem()">
+                                    <i class="bi bi-plus-circle"></i> Agregar item
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de items -->
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered table-striped align-middle" id="tablaItems">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Producto</th>
+                                    <th style="width: 140px;">Precio unit.</th>
+                                    <th style="width: 130px;">Cant.</th>
+                                    <th style="width: 150px;">Subtotal</th>
+                                    <th class="text-center" style="width: 80px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyItems">
+                                <!-- Filas agregadas dinámicamente con JavaScript -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-light fw-bold fs-5">
+                                    <td colspan="3" class="text-end">TOTAL</td>
+                                    <td id="totalFactura" class="text-success">$ 0,00</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a th:href="@{/listar}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check2-circle"></i> Guardar factura
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout/layout :: footer}"></footer>
+
+    <script>
+        let itemIndex = 0;
+
+        function formatearMoneda(valor) {
+            return '$ ' + Number(valor).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function agregarItem() {
+            const select = document.getElementById('productoSelect');
+            const selectedOption = select.options[select.selectedIndex];
+
+            if (!selectedOption || !selectedOption.value) {
+                alert('Por favor, selecciona un producto.');
+                return;
+            }
+
+            const prodId = selectedOption.value;
+            const prodNombre = selectedOption.getAttribute('data-nombre');
+            const prodPrecio = parseFloat(selectedOption.getAttribute('data-precio')) || 0;
+
+            // Verificar si el producto ya existe en la lista para acumular cantidad
+            const existingInput = document.querySelector(`input[name$=".producto.id"][value="${prodId}"]`);
+            if (existingInput) {
+                const tr = existingInput.closest('tr');
+                const cantInput = tr.querySelector('input[type="number"]');
+                cantInput.value = parseInt(cantInput.value || 1) + 1;
+                actualizarFila(cantInput, prodPrecio);
+                return;
+            }
+
+            const tbody = document.getElementById('tbodyItems');
+            const tr = document.createElement('tr');
+            tr.id = `row_${itemIndex}`;
+
+            tr.innerHTML = `
+                <td>
+                    <input type="hidden" name="lista[${itemIndex}].producto.id" value="${prodId}" />
+                    <span>${prodNombre}</span>
+                </td>
+                <td>${formatearMoneda(prodPrecio)}</td>
+                <td>
+                    <input type="number" name="lista[${itemIndex}].cantidad" value="1" min="1"
+                           class="form-control form-control-sm text-center"
+                           onchange="actualizarFila(this, ${prodPrecio})"
+                           onkeyup="actualizarFila(this, ${prodPrecio})" />
+                </td>
+                <td class="fw-semibold subtotal-col">${formatearMoneda(prodPrecio)}</td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="eliminarFila('${tr.id}')">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </td>
+            `;
+
+            tbody.appendChild(tr);
+            itemIndex++;
+            calcularTotal();
+        }
+
+        function actualizarFila(input, precio) {
+            let cant = parseInt(input.value);
+            if (isNaN(cant) || cant < 1) {
+                cant = 1;
+                input.value = 1;
+            }
+            const subtotal = cant * precio;
+            const tr = input.closest('tr');
+            tr.querySelector('.subtotal-col').textContent = formatearMoneda(subtotal);
+            tr.setAttribute('data-subtotal', subtotal);
+            calcularTotal();
+        }
+
+        function eliminarFila(rowId) {
+            const tr = document.getElementById(rowId);
+            if (tr) {
+                tr.remove();
+                calcularTotal();
+            }
+        }
+
+        function calcularTotal() {
+            let total = 0;
+            const rows = document.querySelectorAll('#tbodyItems tr');
+            rows.forEach(tr => {
+                const cant = parseInt(tr.querySelector('input[type="number"]').value) || 0;
+                const hiddenProd = tr.querySelector('input[name$=".producto.id"]');
+                const selectOption = document.querySelector(`#productoSelect option[value="${hiddenProd.value}"]`);
+                const precio = selectOption ? parseFloat(selectOption.getAttribute('data-precio')) : 0;
+                total += cant * precio;
+            });
+            document.getElementById('totalFactura').textContent = formatearMoneda(total);
+        }
+    </script>
+
+</body>
+</html>
